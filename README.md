@@ -84,184 +84,199 @@ tsfm-anomaly-paper/
 ├── requirements.txt # Python dependencies
 └── LICENCE # 
 
-## Installation 
+---
 
-## Installation
+# Installation Guide
 
-### Prerequisites
+## Prerequisites
 
-*   Git
-*   Docker (Recommended for consistent environment)
-*   NVIDIA GPU and NVIDIA Container Toolkit (if using GPU for deep learning models)
+* Git
+* Docker (**Recommended** for consistent environment)
+* NVIDIA GPU and NVIDIA Container Toolkit (if using GPU for deep learning models)
 
-### Cloning the Repository
+---
+
+## Cloning the Repository
 
 ```bash
-git clone https://gitlab.com/basu1999/tsfm-anomaly-paper.git # Or your new repo URL
+git clone https://gitlab.com/basu1999/tsfm-anomaly-paper.git  # Or your new repo URL
 cd tsfm-anomaly-paper
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
-Docker Setup (Recommended)
+```
+
+---
+
+## Docker Setup (Recommended)
 
 This project uses a Docker environment to ensure reproducibility and manage dependencies, especially for GPU support.
 
-Install Docker:
+### Install Docker
 
-Windows & macOS: Download and install from docker.com/get-started
+#### Windows & macOS:
 
-Ubuntu:
+Download and install from [https://www.docker.com/get-started](https://www.docker.com/get-started)
 
+#### Ubuntu:
+
+```bash
 sudo apt-get update
 sudo apt-get install -y docker.io
 sudo systemctl enable --now docker
-sudo usermod -aG docker $USER # Add current user to docker group (logout/login required)
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+sudo usermod -aG docker $USER  # Add current user to docker group (logout/login required)
+```
 
-Install NVIDIA Container Toolkit (for GPU support):
-If you plan to leverage NVIDIA GPUs inside Docker:
+---
 
-# Follow instructions from: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
-# Example for Ubuntu:
+### Install NVIDIA Container Toolkit (For GPU Support)
+
+Follow official instructions at:
+👉 [https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+
+Example for Ubuntu:
+
+```bash
 distribution=$( . /etc/os-release; echo $ID$VERSION_ID ) \
-      && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-      && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
-            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+    && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+        sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+        sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
 sudo apt-get update
 sudo apt-get install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+```
 
-Pull the Docker Image:
+---
 
+## Pull Docker Image
 
+```bash
 docker pull gcr.io/kaggle-gpu-images/python:latest
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+```
 
-(Alternatively, a custom Dockerfile could be provided for a more minimal image based on nvidia/cuda or pytorch/pytorch images).
+(Alternatively, you can build from a custom Dockerfile based on `nvidia/cuda` or `pytorch/pytorch`.)
 
-Run the Docker Container:
-From the project root (tsfm-anomaly-paper/):
+---
 
-# For GPU support
+## Run the Docker Container
+
+From the project root (`tsfm-anomaly-paper/`):
+
+### For GPU:
+
+```bash
 docker run --gpus all -it --rm \
   --name tsfm_anomaly_env \
   -v "$(pwd)":/workspace \
   -w /workspace \
   gcr.io/kaggle-gpu-images/python:latest \
   /bin/bash
+```
 
-# For CPU only
-# docker run -it --rm \
-#   --name tsfm_anomaly_env \
-#   -v "$(pwd)":/workspace \
-#   -w /workspace \
-#   gcr.io/kaggle-gpu-images/python:latest \
-#   /bin/bash
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+### For CPU:
 
---gpus all: Enables GPU access. Omit if not using GPU.
+```bash
+docker run -it --rm \
+  --name tsfm_anomaly_env \
+  -v "$(pwd)":/workspace \
+  -w /workspace \
+  gcr.io/kaggle-gpu-images/python:latest \
+  /bin/bash
+```
 
--it: Interactive terminal.
+**Flags Explanation:**
 
---rm: Removes the container when it exits.
+* `--gpus all`: Enables GPU access (omit for CPU).
+* `-it`: Interactive terminal.
+* `--rm`: Removes container after exit.
+* `-v "$(pwd)":/workspace`: Mounts current directory inside container.
+* `-w /workspace`: Sets container working directory.
 
---name tsfm_anomaly_env: Assigns a name to the container.
+---
 
--v "$(pwd)":/workspace: Mounts the current project directory into /workspace inside the container.
+## Environment Setup (Inside Docker)
 
--w /workspace: Sets the working directory inside the container to /workspace.
-You will now be inside the container's bash shell, in the /workspace directory.
+Once inside the Docker container, run:
 
-Environment Setup (Inside Docker)
-
-Once inside the Docker container:
-
-Upgrade pip and Install Dependencies:
-
+```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+```
 
-Ensure requirements.txt is comprehensive and includes optuna, momentfm (if used directly), scikit-learn, pandas, numpy, torch, joblib, etc.
+Make sure `requirements.txt` includes:
 
-Dataset Setup
+* `optuna`
+* `momentfm` (if used directly)
+* `scikit-learn`
+* `pandas`
+* `numpy`
+* `torch`
+* `joblib`, etc.
 
-Download the LEAD Dataset:
-The primary dataset used is train.csv from the "Energy Anomaly Detection" Kaggle competition (or a similar dataset).
+---
 
-Download link: https://www.kaggle.com/competitions/energy-anomaly-detection/data?select=train.csv .
+## Dataset Setup
 
-Place the Dataset:
-Create a directory named DATASET/ in the root of this project and place the downloaded train.csv file into it.
+Download the **LEAD Dataset**:
 
-# From project root on your host machine, or inside Docker if downloaded there
+👉 [Kaggle Competition Link](https://www.kaggle.com/competitions/energy-anomaly-detection/data?select=train.csv)
+
+Create dataset directory and move the file:
+
+```bash
 mkdir -p DATASET
 mv /path/to/your/downloaded/train.csv DATASET/
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Bash
-IGNORE_WHEN_COPYING_END
+```
 
-The expected structure is tsfm-anomaly-paper/DATASET/train.csv. The default data path in tsfm_ad_lib/config.py points here.
+Ensure structure:
 
-Fold ID Setup (for VAE and MOMENT hyperparameter optimization)
+```
+tsfm-anomaly-paper/
+├── DATASET/
+│   └── train.csv
+```
 
-The VAE and MOMENT hyperparameter optimization scripts (run_vae_hyperopt.py, run_moment_finetune_hyperopt.py) rely on pre-generated K-fold splits that define which building_ids belong to the validation set for each fold.
+---
 
-Obtain Fold ID Files:
+## Fold ID Setup (For VAE & MOMENT Hyperparameter Optimization)
 
-These files (val_id_fold0.pkl, val_id_fold1.pkl, ..., val_id_fold4.pkl) should be placed in a directory.
+Required for `run_vae_hyperopt.py`, `run_moment_finetune_hyperopt.py`.
 
-The default expected directory is tsfm-anomaly-paper/lead-val-ids/.
+### Expected Directory:
 
-(Instruction to user: These files might be provided by the original author or you may need to generate them. A helper script scripts/generate_fold_ids.py (if we decide to add one) could create them based on sklearn.model_selection.KFold across unique building_ids from DATASET/train.csv.).
+```
+tsfm-anomaly-paper/lead-val-ids/
+```
 
+Files needed:
+
+* `val_id_fold0.pkl`
+* ...
+* `val_id_fold4.pkl`
+
+If not provided, you can generate them using a script like `scripts/generate_fold_ids.py` (based on `sklearn.model_selection.KFold` on unique `building_ids` from `train.csv`).
+
+---
 
 ## Usage: Running Scripts
 
-All scripts are located in the scripts/ directory and should be run from inside the Docker container and from the project root (/workspace).
+All scripts are inside the `scripts/` directory. Run them **from inside the Docker container** and **from the project root (`/workspace`)**.
 
-General Notes on Running Scripts
+### Notes:
 
-PYTHONPATH: The scripts include a small header to add the project root to sys.path, allowing them to find the tsfm_ad_lib library. Alternatively, you can set export PYTHONPATH=$PYTHONPATH:/workspace inside the Docker container.
+* **PYTHONPATH**: Either set `export PYTHONPATH=$PYTHONPATH:/workspace` or rely on the header inside scripts.
+* **Output**: Default output directories are subfolders inside `results/` (e.g., `results/iqr_eval/`). Use `--output_dir` to override.
+* **Logging**: Console + `.log` file per run. Use `--log_level DEBUG` or `INFO` as needed.
+* **Help**: Scripts support `--help` to list options:
 
-Output Directories: Scripts will create output subdirectories within results/ by default (e.g., results/iqr_eval/). This can be changed with the --output_dir argument.
+Example:
 
-Logging: Scripts use Python's logging. Log messages go to the console and, by default, to a .log file within the script's specific output directory. Use --log_level (e.g., DEBUG, INFO) to control verbosity.
+```bash
+python scripts/run_iqr_eval.py --help
+```
 
-Help: All scripts support a --help argument to display all available command-line options. Example: python scripts/run_iqr_eval.py --help.
+* **Data Path**: Override with `--data_path` if your `train.csv` is not in `DATASET/train.csv`.
 
-Data Path: Most scripts take a --data_path argument. If your train.csv is not at DATASET/train.csv, you'll need to specify this.
+---
 
+Let me know if you'd like the Dockerfile or helper script for generating fold IDs to be created too.
