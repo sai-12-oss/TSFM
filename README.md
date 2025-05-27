@@ -49,40 +49,48 @@ This repository provides a modularized Python library and a set of executable sc
     *   Training final deep learning models with optimized hyperparameters.
 *   Configurable data paths, model parameters, and logging.
 *   Dockerized environment for reproducibility.
-
 ## Project Structure 
 
 tsfm-anomaly-paper/
-├── tsfm_ad_lib/ # Core Python library
-│ ├── init.py
-│ ├── config.py # Default configurations
-│ ├── data_loader.py # Data loading utilities and TimeDataset
-│ ├── preprocessing.py # Preprocessing functions
-│ ├── models/ # Model definitions
-│ │ ├── vae.py, moment.py, tree_based.py, ..
-│ ├── training.py # Training loop functions
-│ ├── evaluation.py # Evaluation functions
-│ └── utils.py # Utility functions
-├── scripts/ # Executable scripts using the library
-│ ├── run_iqr_eval.py
-│ ├── run_mz_score_eval.py
-│ ├── run_isolation_forest_eval.py
-│ ├── run_lof_eval.py
-│ ├── run_vae_hyperopt.py
-│ ├── run_moment_finetune_hyperopt.py
-│ ├── train_final_vae.py
-│ └── finetune_final_moment.py
-├── notebooks/ # Example Jupyter notebooks
-├── tests/ # (To be added) Unit and integration tests
-├── DATASET/ # Input data
-│ └── train.csv
-├── lead-val-ids/ # Pre-generated K-fold validation IDs
-│ └── val_id_fold0.pkl ...
-├── results/ # Default output directory for models, logs, metrics
-├── .gitignore
-├── README.md # This file
-├── requirements.txt # Python dependencies
-└── LICENCE # 
+├── tsfm_ad_lib/                # Core Python library for anomaly detection
+│   ├── __init__.py             # Package initializer
+│   ├── config.py               # Default configurations for models and training
+│   ├── data_loader.py          # Data loading utilities and TimeDataset class
+│   ├── preprocessing.py        # Data preprocessing and feature engineering functions
+│   ├── models/                 # Model definitions (VAE, MOMENT, Tree-based, etc.)
+│   │   ├── vae.py
+│   │   ├── moment.py
+│   │   └── tree_based.py
+│   ├── training.py             # Training loop functions
+│   ├── evaluation.py           # Evaluation and scoring utilities
+│   └── utils.py                # Miscellaneous utility functions
+│
+├── scripts/                    # Executable pipeline scripts
+│   ├── run_iqr_eval.py
+│   ├── run_mz_score_eval.py
+│   ├── run_isolation_forest_eval.py
+│   ├── run_lof_eval.py
+│   ├── run_vae_hyperopt.py
+│   ├── run_moment_finetune_hyperopt.py
+│   ├── train_final_vae.py
+│   └── finetune_final_moment.py
+│
+├── notebooks/                  # Example Jupyter notebooks for experimentation
+│
+├── tests/                      # (To be added) Unit and integration tests
+│
+├── DATASET/                    # Input dataset directory
+│   └── train.csv
+│
+├── lead-val-ids/              # Predefined K-fold validation ID files
+│   └── val_id_fold0.pkl, ...
+│
+├── results/                    # Output directory for logs, models, and evaluation results
+│
+├── .gitignore                  # Git ignore rules
+├── README.md                   # Project overview and usage guide
+├── requirements.txt            # Python dependencies
+└── LICENSE                     # Project license
 
 ---
 
@@ -404,3 +412,32 @@ python scripts/finetune_final_moment.py \
 ```bash
 python scripts/generate_folds.py
 ```
+
+## Future Work (Tests & Notebooks)
+This is an initial modularized version of the codebase. Future enhancements will include:
+*   **Comprehensive Automated Test Suite:** Unit Commands:** Double-check that the default paths and example commands align with your final file structure and how you intend users to run things and integration tests for the `tsfm_ad_lib` library using `pytest` to ensure robustness and correctness.
+*   **Example Jupyter Notebooks:** Demonstrations of how to use the library components interactively for various tasks like data exploration. The paths in `lib_config.py` should be the ultimate source for defaults used by scripts.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+1.  **`generate_folds.py`:** Decide if you want to include this script in the repository (e.g.,  Fork the repository.
+2.  Create a feature branch (`git checkout -b feature/YourNewFeature`).
+3 in `scripts/` or root) and document its use in the "Fold ID Setup" section.
+4..  Commit your changes (`git commit -m 'Add YourNewFeature'`).
+4.  Push to the branch  **`requirements.txt` and `LICENCE` file:** Create these actual files in your project root.
+5.  Open a Merge Request.
+
+---
+
+## License
+
+Your choice*
+
+---
+
+## Contact
+
+Name*
