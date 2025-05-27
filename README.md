@@ -76,17 +76,12 @@ tsfm-anomaly-paper/
 │   └── finetune_final_moment.py
 │
 ├── notebooks/                  # Example Jupyter notebooks for experimentation
-│
 ├── tests/                      # (To be added) Unit and integration tests
-│
 ├── DATASET/                    # Input dataset directory
 │   └── train.csv
-│
-├── lead-val-ids/              # Predefined K-fold validation ID files
+├── lead-val-ids/               # Predefined K-fold validation ID files
 │   └── val_id_fold0.pkl, ...
-│
 ├── results/                    # Output directory for logs, models, and evaluation results
-│
 ├── .gitignore                  # Git ignore rules
 ├── README.md                   # Project overview and usage guide
 ├── requirements.txt            # Python dependencies
