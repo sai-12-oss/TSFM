@@ -50,8 +50,7 @@ This repository provides a modularized Python library and a set of executable sc
 *   Configurable data paths, model parameters, and logging.
 *   Dockerized environment for reproducibility.
 ## Project Structure 
-
-<details> <summary>Click to view formatted project structure</summary>
+```bash
 
 tsfm-anomaly-paper/
 ├── tsfm_ad_lib/                # Core Python library for anomaly detection
@@ -88,9 +87,7 @@ tsfm-anomaly-paper/
 ├── README.md                   # Project overview and usage guide
 ├── requirements.txt            # Python dependencies
 └── LICENSE                     # Project license
-
-</details>
-
+```
 ---
 
 # Installation Guide
