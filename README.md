@@ -276,7 +276,131 @@ python scripts/run_iqr_eval.py --help
 ```
 
 * **Data Path**: Override with `--data_path` if your `train.csv` is not in `DATASET/train.csv`.
+* **Run scripts from** the project root: `/workspace`
+* **All scripts live in**: `scripts/`
+* **Set PYTHONPATH** (inside Docker):
+
+  ```bash
+  export PYTHONPATH=/workspace
+  ```
+* **Control logging with**:
+
+  ```bash
+  --log_level {DEBUG, INFO, WARNING, ERROR}
+  ```
+* **GPU/CPU control** (for DL models):
+
+  ```bash
+  --device cuda  # or cpu
+  ```
+---
+
+## A. Statistical & Tree-Based Methods
+
+These methods evaluate models **per building** to maximize F1 score. Results saved in `results/`.
+
+### 1. Interquartile Range (IQR)
+
+```bash
+python scripts/run_iqr_eval.py \
+  --output_dir results/iqr_evaluation \
+  --k_search_values "0.5,4.5,0.5" \
+  --log_level INFO
+```
+
+### 2. Modified Z-Score
+
+```bash
+python scripts/run_mz_score_eval.py \
+  --output_dir results/mz_score_evaluation \
+  --k_search_values "2.0,5.0,0.5" \
+  --use_absolute_zscore \
+  --log_level INFO
+```
+
+### 3. Isolation Forest
+
+```bash
+python scripts/run_isolation_forest_eval.py \
+  --output_dir results/iforest_evaluation \
+  --contamination_search_values "0.01,0.1,0.01" \
+  --iforest_base_params '{"n_estimators": 100}' \
+  --log_level INFO
+```
+
+### 4. Local Outlier Factor (LOF)
+
+```bash
+python scripts/run_lof_eval.py \
+  --output_dir results/lof_evaluation \
+  --contamination_search_values "0.01,0.1,0.01" \
+  --lof_base_params '{"n_neighbors": 20}' \
+  --log_level INFO
+```
 
 ---
 
-Let me know if you'd like the Dockerfile or helper script for generating fold IDs to be created too.
+## B. Deep Learning: Hyperparameter Optimization
+
+Requires `lead-val-ids/` directory with fold split `.pkl` files.
+
+### 5. VAE Hyperparameter Search (with Optuna)
+
+```bash
+python scripts/run_vae_hyperopt.py \
+  --output_dir results/vae_hyperopt_study \
+  --study_name my_vae_study \
+  --fold_id_dir lead-val-ids/ \
+  --n_trials 10 \
+  --epochs_min 5 --epochs_max 20 \
+  --log_level INFO
+```
+
+### 6. MOMENT Hyperparameter Search
+
+```bash
+python scripts/run_moment_finetune_hyperopt.py \
+  --output_dir results/moment_hyperopt_study \
+  --study_name my_moment_study \
+  --fold_id_dir lead-val-ids/ \
+  --n_trials 5 \
+  --epochs_min 5 --epochs_max 20 \
+  --lr_min 1e-5 --lr_max 1e-2 \
+  --log_level INFO
+```
+
+---
+
+## C. Deep Learning: Final Model Training
+
+Use best hyperparameters obtained above (`*_best_params.json`).
+
+### 7. Train Final VAE
+
+```bash
+python scripts/train_final_vae.py \
+  --hyperparams_path results/vae_hyperopt_study/my_vae_study_best_params.json \
+  --output_dir results/final_models/vae \
+  --model_filename trained_vae.pth \
+  --log_level INFO
+```
+
+### 8. Fine-tune Final MOMENT
+
+```bash
+python scripts/finetune_final_moment.py \
+  --hyperparams_path results/moment_hyperopt_study/my_moment_study_best_params.json \
+  --output_dir results/final_models/moment \
+  --model_savename finetuned_moment_pipeline \
+  --log_level INFO
+```
+
+---
+
+## Utilities
+
+### Generate K-Folds (if `lead-val-ids/` is missing)
+
+```bash
+python scripts/generate_folds.py
+```
